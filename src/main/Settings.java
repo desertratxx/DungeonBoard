@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JToggleButton;
 
 /**
  * contains static final variables that are used through Dungeon Board
@@ -266,6 +267,19 @@ public class Settings {
 	 */
 	public static JButton createButton(ImageIcon imageIcon) {
 		JButton button = new JButton(imageIcon);
+		button.setFocusPainted(false);
+		button.setRolloverEnabled(false);
+		return button;
+	}
+	
+	
+	/**
+	 * creates and returns a {@code JToggleButton} with the proper look
+	 * @param label text to be shown on the {@code JToggleButton}
+	 * @return a {@code JToggleButton} that looks like the standard for Dungeon Board
+	 */
+	public static JToggleButton createToggleButton(String label) {
+		JToggleButton button = new JToggleButton(label);
 		button.setFocusPainted(false);
 		button.setRolloverEnabled(false);
 		return button;

@@ -14,3 +14,11 @@ hs_err_pid*
 /.settings/
 .classpath
 .project
+/nbproject/private/
+/build/
+/.gitignore
+/build.xml
+/manifest.mf
+/Dungeon Board/Data
+/nbproject
+/.gitignore

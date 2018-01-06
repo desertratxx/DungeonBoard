@@ -190,6 +190,9 @@ public class ControlPaint extends Control {
 		});
 		innerNorthPanel.add(slider);
 		
+		innerNorthPanel.add(drawPanel.getSwitchGridButton());
+		innerNorthPanel.add(drawPanel.getSmallerGridButton());
+		innerNorthPanel.add(drawPanel.getBiggerGridButton());
 		innerNorthPanel.add(drawPanel.getUpdateButton());
 		
 		JPanel westPanel = new JPanel();

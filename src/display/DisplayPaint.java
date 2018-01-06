@@ -9,6 +9,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import main.Settings;
+import paint.DrawPanel;
 
 /**
  * {@code JPanel} for displaying Paint Utility
@@ -44,6 +45,16 @@ public class DisplayPaint extends Display {
 	private double scale;
 	
 	/**
+         * true if grid is enabled, set by {@link DrawPanel}
+	 */
+	private boolean gridEnabled;
+	
+	/**
+         * size of the grid
+	 */
+	private double gridSize;
+	
+	/**
 	 * creates in instance of {@code DisplayPaint}
 	 */
 	public DisplayPaint() {
@@ -65,6 +76,31 @@ public class DisplayPaint extends Display {
 			g2d.drawImage(Settings.PAINT_IMAGE, -windowPos.x, -windowPos.y, imageSize.width, imageSize.height, null);
 			g2d.drawImage(mask, -windowPos.x, -windowPos.y, imageSize.width, imageSize.height, null);
 		}
+                
+                g2d.setColor(Color.RED);
+                
+                if(gridEnabled){
+                    Color current = g2d.getColor();
+
+//                    g2d.setColor(new Color(0f,0f,0f, 0.15f));
+                    g2d.setColor(Color.RED);
+                    
+                    double adjustedGrid = gridSize * (1 / scale);
+                    
+                    adjustedGrid = Math.max(adjustedGrid, 3);
+                    
+                    for(int i = 0; i < Settings.DISPLAY_SIZE.width; i+=adjustedGrid){
+                        g2d.drawLine(i, 0, i, Settings.DISPLAY_SIZE.height);
+                    }
+
+                    for(int i = 0; i < Settings.DISPLAY_SIZE.height; i+=adjustedGrid){
+                        g2d.drawLine(0, i, Settings.DISPLAY_SIZE.width, i);
+                    }
+                    g2d.setColor(current);
+                }
+
+                
+                
 		paintMouse(g2d);
 		g2d.dispose();
 	}
@@ -92,6 +128,18 @@ public class DisplayPaint extends Display {
 		if (b) {
 			repaint();
 		}
+	}
+	
+	
+	/**
+         * Updates the grid values and repaints
+         * @param gridSize
+         * @param enabled
+	 */
+	public void setGrid(double gridSize, boolean enabled) {
+                this.gridEnabled = enabled;
+                this.gridSize = gridSize;
+		repaint();
 	}
 	
 	/**

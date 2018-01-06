@@ -20,10 +20,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JToggleButton;
 
 import main.Main;
 import main.Settings;
@@ -130,6 +132,30 @@ public class DrawPanel extends JComponent {
 	private JButton updateButton;
 	
 	/**
+	 * the {@link JToogleButton} that causes to enable or disable a
+         * grid
+	 */
+	private JToggleButton switchGrid;
+        
+        
+	/**
+         * distance of the grid
+	 */
+        private double gridSize;
+	
+	/**
+	 * makes the grid bigger
+	 */
+	private JButton biggerGrid;
+	
+	
+	/**
+	 * makes the grid smaller with a minimum of 10;
+	 */
+	private JButton smallerGrid;
+	
+	
+	/**
 	 * creates an instance of {@code DrawPanel}
 	 */
 	public DrawPanel() {
@@ -142,12 +168,42 @@ public class DrawPanel extends JComponent {
 		penType = Pen.CIRCLE;
 		styleLock = Direction.NONE;
 		drawMode = DrawMode.ANY;
+                gridSize = 10;
+                
+                switchGrid = Settings.createToggleButton("#");
+                switchGrid.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {             
+                        repaint();
+			updateButton.setEnabled(true);
+                    }
+                });
+                biggerGrid = Settings.createButton("+");
+                biggerGrid.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        gridSize = Math.min(gridSize + 3, 50); 
+                        repaint();
+			updateButton.setEnabled(true);
+                    }
+                });
+                smallerGrid = Settings.createButton("-");
+                smallerGrid.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        gridSize = Math.max(gridSize - 3, 10); 
+                            repaint();
+			updateButton.setEnabled(true);
+                    }
+                });
 		updateButton = Settings.createButton("Update Screen");
 		updateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (hasImage()) {
 					try {
 						Main.DISPLAY_PAINT.setMask(getMask());
+                                                
+                                                Main.DISPLAY_PAINT.setGrid(gridSize, switchGrid.isSelected());
 					} catch (OutOfMemoryError error) {
 						Settings.showError("Cannot update Image, file is probably large", error);
 					}
@@ -322,7 +378,31 @@ public class DrawPanel extends JComponent {
 	public JButton getUpdateButton() {
 		return updateButton;
 	}
+        
+        /**
+         * returns the {@code  switchGridButton} 
+         * @return 
+         */
+        public JToggleButton getSwitchGridButton(){
+            return switchGrid;
+        }
 	
+	
+	/**
+	 * returns the {@code biggerGrid} 
+	 * @return
+	 */
+	public JButton getBiggerGridButton() {
+		return biggerGrid;
+	}
+	
+	/**
+	 * returns the {@code smallerGrid} 
+	 * @return
+	 */
+	public JButton getSmallerGridButton() {
+		return smallerGrid;
+	}
 	/**
 	 * sets the paint image to null, and removes any settings for it
 	 */
@@ -480,13 +560,33 @@ public class DrawPanel extends JComponent {
 				g2d.drawLine(mousePos.x - 10, mousePos.y, mousePos.x + 10, mousePos.y);
 				break;
 			}
-			
+                        
+                        if(switchGrid.isSelected()){
+                            drawGrid(g2d);
+                        }
 			drawPlayerView(g2d);
 		}
 		else if (controlSize != null) {
 			g2d.drawString("No image loaded", controlSize.width / 2, controlSize.height / 2);
 		}
 	}
+        
+        private void drawGrid(Graphics2D g2d){
+            
+            Color current = g2d.getColor();
+            
+            g2d.setColor(new Color(0f,0f,0f, 0.05f));
+                    g2d.setColor(Color.RED);
+            for(int i = 0; i < controlSize.width; i+=gridSize){
+                g2d.drawLine(i, 0, i, controlSize.height);
+            }
+
+            for(int i = 0; i < controlSize.height; i+=gridSize){
+                g2d.drawLine(0, i, controlSize.width, i);
+            }
+            
+            g2d.setColor(current);
+        }
 	
 	/**
 	 * Draws a rectangle on the area of a {@code DrawPanel} to tell what the players can see
@@ -700,7 +800,7 @@ public class DrawPanel extends JComponent {
 				
 				File dataFile = new File(Settings.DATA_FOLDER + File.separator + "Paint" + File.separator + f.getName() + ".data");
 				BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile));
-				writer.write(String.format("%f %d %d", displayZoom, lastWindowClick.x, lastWindowClick.y));
+				writer.write(String.format(Locale.ENGLISH, "%f %d %d", displayZoom, lastWindowClick.x, lastWindowClick.y));
 				writer.close();
 				
 			} catch (IOException e) {
