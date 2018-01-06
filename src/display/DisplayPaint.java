@@ -88,12 +88,17 @@ public class DisplayPaint extends Display {
                     double adjustedGrid = gridSize * (1 / scale);
                     
                     adjustedGrid = Math.max(adjustedGrid, 3);
+                    System.out.println("windowPos.y"  + windowPos.y);
+                    System.out.println("windowPos.x"  + windowPos.x);
                     
-                    for(int i = 0; i < Settings.DISPLAY_SIZE.width; i+=adjustedGrid){
+                    int startY = (int)adjustedGrid - (int)(windowPos.y % (int)adjustedGrid); 
+                    int startX = (int)adjustedGrid - (int)(windowPos.x % (int)adjustedGrid);
+                    
+                    for(int i = startX; i < Settings.DISPLAY_SIZE.width; i+=adjustedGrid){
                         g2d.drawLine(i, 0, i, Settings.DISPLAY_SIZE.height);
                     }
 
-                    for(int i = 0; i < Settings.DISPLAY_SIZE.height; i+=adjustedGrid){
+                    for(int i = startY; i < Settings.DISPLAY_SIZE.height; i+=adjustedGrid){
                         g2d.drawLine(0, i, Settings.DISPLAY_SIZE.width, i);
                     }
                     g2d.setColor(current);
@@ -139,6 +144,7 @@ public class DisplayPaint extends Display {
 	public void setGrid(double gridSize, boolean enabled) {
                 this.gridEnabled = enabled;
                 this.gridSize = gridSize;
+                
 		repaint();
 	}
 	

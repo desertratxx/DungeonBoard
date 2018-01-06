@@ -203,7 +203,12 @@ public class DrawPanel extends JComponent {
 					try {
 						Main.DISPLAY_PAINT.setMask(getMask());
                                                 
-                                                Main.DISPLAY_PAINT.setGrid(gridSize, switchGrid.isSelected());
+                                                
+                                                double factorWidth = (double)Settings.DISPLAY_SIZE.width / (double)controlSize.width;
+                                                double factorHeight = (double)Settings.DISPLAY_SIZE.height  / (double)controlSize.height;
+                                                
+                                                double gridFactor = Math.max(factorWidth, factorHeight);
+                                                Main.DISPLAY_PAINT.setGrid(gridSize * gridFactor, switchGrid.isSelected());
 					} catch (OutOfMemoryError error) {
 						Settings.showError("Cannot update Image, file is probably large", error);
 					}
