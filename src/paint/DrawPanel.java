@@ -24,8 +24,11 @@ import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JToggleButton;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
 
 import main.Main;
 import main.Settings;
@@ -153,6 +156,18 @@ public class DrawPanel extends JComponent {
 	 * makes the grid smaller with a minimum of 10;
 	 */
 	private JButton smallerGrid;
+        
+        /**
+         * button to show the color chooser
+         */
+                
+        private JButton chooseGridColor;
+        
+        /**
+         * color of the grid
+         */
+                
+        private Color gridColor;
 	
 	
 	/**
@@ -168,9 +183,11 @@ public class DrawPanel extends JComponent {
 		penType = Pen.CIRCLE;
 		styleLock = Direction.NONE;
 		drawMode = DrawMode.ANY;
-                gridSize = 10;
+                gridSize = 50;
+                gridColor = new Color(0f, 0f, 1f, 0.8f);
                 
                 switchGrid = Settings.createToggleButton("#");
+                switchGrid.setToolTipText("Enable/Disable Grid");
                 switchGrid.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {             
@@ -179,21 +196,68 @@ public class DrawPanel extends JComponent {
                     }
                 });
                 biggerGrid = Settings.createButton("+");
+                biggerGrid.setToolTipText("Bigger Grid");
                 biggerGrid.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        gridSize = Math.min(gridSize + 3, 50); 
+                        gridSize = Math.min(gridSize + 10, 200); 
                         repaint();
 			updateButton.setEnabled(true);
                     }
                 });
                 smallerGrid = Settings.createButton("-");
+                smallerGrid.setToolTipText("Smaller Grid");
                 smallerGrid.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        gridSize = Math.max(gridSize - 3, 10); 
+                        gridSize = Math.max(gridSize - 10, 10); 
                             repaint();
 			updateButton.setEnabled(true);
+                    }
+                });
+                
+                chooseGridColor = Settings.createButton(" ");
+                chooseGridColor.setToolTipText("Change Grid Color");
+                chooseGridColor.setBackground(gridColor);
+                chooseGridColor.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JColorChooser jColorChooser = new JColorChooser(gridColor);
+                        AbstractColorChooserPanel[] panels = jColorChooser.getChooserPanels();
+                        for (AbstractColorChooserPanel accp : panels) {
+                           if(!accp.getDisplayName().equals("RGB")) {
+                              jColorChooser.removeChooserPanel(accp);
+                           } 
+                        }
+                        JDialog dialog = JColorChooser.createDialog(
+                            DrawPanel.this,
+                            "Choose Grid Color",
+                            true,
+                            jColorChooser,
+                            new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {                                
+                                if (jColorChooser.getColor() != null) {
+                                    gridColor = jColorChooser.getColor();
+                                    chooseGridColor.setBackground(gridColor);
+                                    repaint();
+                                    updateButton.setEnabled(true);
+                                }
+                            }
+                        },
+                            new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {                    
+                                if (jColorChooser.getColor() != null) {
+                                    gridColor = jColorChooser.getColor();
+                                    chooseGridColor.setBackground(gridColor);
+                                    repaint();
+                                    updateButton.setEnabled(true);
+                                }
+                            }
+                        });
+                        
+                        dialog.setVisible(true);
                     }
                 });
 		updateButton = Settings.createButton("Update Screen");
@@ -204,11 +268,7 @@ public class DrawPanel extends JComponent {
 						Main.DISPLAY_PAINT.setMask(getMask());
                                                 
                                                 
-                                                double factorWidth = (double)Settings.DISPLAY_SIZE.width / (double)controlSize.width;
-                                                double factorHeight = (double)Settings.DISPLAY_SIZE.height  / (double)controlSize.height;
-                                                
-                                                double gridFactor = Math.max(factorWidth, factorHeight);
-                                                Main.DISPLAY_PAINT.setGrid(gridSize * gridFactor, switchGrid.isSelected());
+                                                Main.DISPLAY_PAINT.setGrid(gridSize, switchGrid.isSelected(), gridColor);
 					} catch (OutOfMemoryError error) {
 						Settings.showError("Cannot update Image, file is probably large", error);
 					}
@@ -409,6 +469,13 @@ public class DrawPanel extends JComponent {
 		return smallerGrid;
 	}
 	/**
+	 * returns the {@code chooseGridColor} 
+	 * @return
+	 */
+	public JButton getChooseGridColordButton() {
+		return chooseGridColor;
+	}
+	/**
 	 * sets the paint image to null, and removes any settings for it
 	 */
 	public void resetImage() {
@@ -579,14 +646,21 @@ public class DrawPanel extends JComponent {
         private void drawGrid(Graphics2D g2d){
             
             Color current = g2d.getColor();
+            int w = (int) (Settings.DISPLAY_SIZE.width * controlSize.width / Settings.PAINT_IMAGE.getWidth());
+            int h = (int) (Settings.DISPLAY_SIZE.height *  controlSize.height / Settings.PAINT_IMAGE.getHeight());
+		
+            double factorWidth = (double)w / (double)Settings.DISPLAY_SIZE.width;
+            double factorHeight = (double)h  / (double)Settings.DISPLAY_SIZE.height;
             
-            g2d.setColor(new Color(0f,0f,0f, 0.05f));
-                    g2d.setColor(Color.RED);
-            for(int i = 0; i < controlSize.width; i+=gridSize){
+            int gridHeight = (int)(gridSize * factorHeight);
+            int gridWidth = (int)(gridSize * factorWidth);
+            
+            g2d.setColor(gridColor);
+            for(int i = 0; i < controlSize.width; i+=gridWidth){
                 g2d.drawLine(i, 0, i, controlSize.height);
             }
 
-            for(int i = 0; i < controlSize.height; i+=gridSize){
+            for(int i = 0; i < controlSize.height; i+=gridHeight){
                 g2d.drawLine(0, i, controlSize.width, i);
             }
             
@@ -805,12 +879,37 @@ public class DrawPanel extends JComponent {
 				
 				File dataFile = new File(Settings.DATA_FOLDER + File.separator + "Paint" + File.separator + f.getName() + ".data");
 				BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile));
-				writer.write(String.format(Locale.ENGLISH, "%f %d %d", displayZoom, lastWindowClick.x, lastWindowClick.y));
+				writer.write(String.format(Locale.ENGLISH, "%f %d %d %b %f %s", displayZoom, lastWindowClick.x, lastWindowClick.y, switchGrid.isSelected(), gridSize, formatColor(gridColor)));
 				writer.close();
 				
 			} catch (IOException e) {
 				Settings.showError("Cannot save Mask", e);
 			}
 		}
+	}
+        
+        private String formatColor(Color color){
+            StringBuffer sb = new StringBuffer();
+            sb.append(color.getRed());
+            sb.append(";");
+            sb.append(color.getGreen());
+            sb.append(";");
+            sb.append(color.getBlue());
+            sb.append(";");
+            sb.append(color.getAlpha());
+            return sb.toString(); 
+        }
+	/**
+         * Updates the grid values
+         * @param gridSize
+         * @param gridSelected
+         * @param gridColor
+	 */
+	public void setGrid(double gridSize, boolean gridSelected, Color gridColor) {
+                this.getSwitchGridButton().setSelected(gridSelected);
+                this.chooseGridColor.setBackground(gridColor);
+                this.gridSize = gridSize;
+                this.gridColor = gridColor;
+                
 	}
 }

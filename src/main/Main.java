@@ -20,6 +20,7 @@ import display.DisplayLoading;
 import display.DisplayPaint;
 import display.DisplayPictures;
 import display.DisplayWindow;
+import java.awt.Color;
 
 /**
  * contains most of the starting code for Dungeon Board
@@ -99,6 +100,8 @@ public class Main {
 			UIManager.put("OptionPane.background", Settings.BACKGROUND);
 			UIManager.put("Panel.background", Settings.BACKGROUND);
 			UIManager.put("Slider.background", Settings.CONTROL_BACKGROUND);
+                        UIManager.put("ToggleButton.select", Settings.BACKGROUND);
+                        UIManager.put("ToggleButton.background", Settings.CONTROL_BACKGROUND);
 			
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {

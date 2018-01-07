@@ -47,12 +47,17 @@ public class DisplayPaint extends Display {
 	/**
          * true if grid is enabled, set by {@link DrawPanel}
 	 */
-	private boolean gridEnabled;
+	private boolean gridSelected;
 	
 	/**
          * size of the grid
 	 */
 	private double gridSize;
+	
+	/**
+         * color of the grid
+	 */
+	private Color gridColor;
 	
 	/**
 	 * creates in instance of {@code DisplayPaint}
@@ -77,19 +82,16 @@ public class DisplayPaint extends Display {
 			g2d.drawImage(mask, -windowPos.x, -windowPos.y, imageSize.width, imageSize.height, null);
 		}
                 
-                g2d.setColor(Color.RED);
                 
-                if(gridEnabled){
+                if(gridSelected){
                     Color current = g2d.getColor();
 
-//                    g2d.setColor(new Color(0f,0f,0f, 0.15f));
-                    g2d.setColor(Color.RED);
+                    g2d.setColor(gridColor);
+                    
                     
                     double adjustedGrid = gridSize * (1 / scale);
                     
                     adjustedGrid = Math.max(adjustedGrid, 3);
-                    System.out.println("windowPos.y"  + windowPos.y);
-                    System.out.println("windowPos.x"  + windowPos.x);
                     
                     int startY = (int)adjustedGrid - (int)(windowPos.y % (int)adjustedGrid); 
                     int startX = (int)adjustedGrid - (int)(windowPos.x % (int)adjustedGrid);
@@ -139,11 +141,13 @@ public class DisplayPaint extends Display {
 	/**
          * Updates the grid values and repaints
          * @param gridSize
-         * @param enabled
+         * @param gridSelected
+         * @param gridColor
 	 */
-	public void setGrid(double gridSize, boolean enabled) {
-                this.gridEnabled = enabled;
+	public void setGrid(double gridSize, boolean gridSelected, Color gridColor) {
+                this.gridSelected = gridSelected;
                 this.gridSize = gridSize;
+                this.gridColor = gridColor;
                 
 		repaint();
 	}

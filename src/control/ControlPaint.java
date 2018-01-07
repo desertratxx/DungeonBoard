@@ -114,6 +114,11 @@ public class ControlPaint extends Control {
 								zoomSlider.setValue((int) (zoom * 100));
 								zoomText.setText(String.format("%.2f", zoom));
 								drawPanel.setWindow(zoom, p);
+                                                                boolean gridEnabled = Boolean.parseBoolean(data[3]);
+                                                                double gridSize = Double.parseDouble(data[4]);
+                                                                Color gridColor = getColorFromString(data[5]);
+                                                                drawPanel.setGrid(gridSize, gridEnabled, gridColor);;
+                                                                
 								br.close();
 							} catch (IOException e2) {
 								Settings.showError("Cannot load Mask Data", e2);
@@ -133,6 +138,12 @@ public class ControlPaint extends Control {
 					}
 				}
 			}
+
+                    private Color getColorFromString(String colorString) {
+                        String[] splitted = colorString.split(";");
+                        return new Color(Integer.parseInt(splitted[0]), Integer.parseInt(splitted[1]), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    }
+                    
 		});
 		innerNorthPanel.add(fileBox);
 		
@@ -193,6 +204,7 @@ public class ControlPaint extends Control {
 		innerNorthPanel.add(drawPanel.getSwitchGridButton());
 		innerNorthPanel.add(drawPanel.getSmallerGridButton());
 		innerNorthPanel.add(drawPanel.getBiggerGridButton());
+		innerNorthPanel.add(drawPanel.getChooseGridColordButton());
 		innerNorthPanel.add(drawPanel.getUpdateButton());
 		
 		JPanel westPanel = new JPanel();
