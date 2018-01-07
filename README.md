@@ -18,4 +18,4 @@ The next time you run Dungeon Board it will automatically load these on startup.
 <br><br>
 If you want to run Dungeon Board with more memory allocated you have to run the .jar file from the command line.
 <br>
-<i>&nbsp;&nbsp;java -jar -Xmx1000m "Dungeon Board v2.4.1.jar"</i>
+<i>&nbsp;&nbsp;java -jar -Xmx1000m "Dungeon Board v2.4.1_grid.jar"</i>
