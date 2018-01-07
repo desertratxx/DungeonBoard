@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
+import paint.JAlphaButton;
 
 /**
  * contains static final variables that are used through Dungeon Board
@@ -260,6 +261,17 @@ public class Settings {
 		return button;
 	}
 	
+	/**
+	 * creates and returns a {@code JAlphaButton} with the proper look
+	 * @param label text to be shown on the {@code JAlphaButton}
+	 * @return a {@code JAlphaButton} that looks like the standard for Dungeon Board
+	 */
+	public static JAlphaButton createAlphaButton(String label) {
+		JAlphaButton button = new JAlphaButton(label);
+		button.setFocusPainted(false);
+		button.setRolloverEnabled(false);
+		return button;
+	}
 	/**
 	 * creates and returns a {@code JButton} with the proper look
 	 * @param imageIcon to be shown on the {@code JButton}

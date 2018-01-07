@@ -216,9 +216,10 @@ public class DrawPanel extends JComponent {
                     }
                 });
                 
-                chooseGridColor = Settings.createButton(" ");
+                chooseGridColor = Settings.createAlphaButton(" ");
                 chooseGridColor.setToolTipText("Change Grid Color");
                 chooseGridColor.setBackground(gridColor);
+                chooseGridColor.setOpaque(false);
                 chooseGridColor.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -240,8 +241,8 @@ public class DrawPanel extends JComponent {
                                 if (jColorChooser.getColor() != null) {
                                     gridColor = jColorChooser.getColor();
                                     chooseGridColor.setBackground(gridColor);
-                                    repaint();
                                     updateButton.setEnabled(true);
+                                    repaint();
                                 }
                             }
                         },
@@ -251,8 +252,8 @@ public class DrawPanel extends JComponent {
                                 if (jColorChooser.getColor() != null) {
                                     gridColor = jColorChooser.getColor();
                                     chooseGridColor.setBackground(gridColor);
-                                    repaint();
                                     updateButton.setEnabled(true);
+                                    repaint();
                                 }
                             }
                         });
