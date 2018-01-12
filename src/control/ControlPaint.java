@@ -108,6 +108,7 @@ public class ControlPaint extends Control {
 								BufferedReader br = new BufferedReader(new FileReader(dataFile));
 								
 								String data[] = br.readLine().split(" ");
+                                                                System.out.println(data);
 								double zoom = Double.parseDouble(data[0]);
 								Point p = new Point(Integer.parseInt(data[1]), Integer.parseInt(data[2]));
 								zoomSlider.setMaximum(10_000);
@@ -202,6 +203,7 @@ public class ControlPaint extends Control {
 		innerNorthPanel.add(slider);
 		
 		innerNorthPanel.add(drawPanel.getSwitchGridButton());
+		innerNorthPanel.add(drawPanel.getSwitchGridNumbersButton());
 		innerNorthPanel.add(drawPanel.getSmallerGridButton());
 		innerNorthPanel.add(drawPanel.getBiggerGridButton());
 		innerNorthPanel.add(drawPanel.getChooseGridColordButton());

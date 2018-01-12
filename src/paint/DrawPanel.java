@@ -3,6 +3,7 @@ package paint;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -139,6 +140,12 @@ public class DrawPanel extends JComponent {
          * grid
 	 */
 	private JToggleButton switchGrid;
+	
+	/**
+	 * the {@link JToogleButton} that causes to enable or disable a
+         * numbers on the grid
+	 */
+	private JToggleButton switchGridNumbers;
         
         
 	/**
@@ -195,12 +202,23 @@ public class DrawPanel extends JComponent {
 			updateButton.setEnabled(true);
                     }
                 });
+                
+                switchGridNumbers = Settings.createToggleButton("123");
+                switchGridNumbers.setToolTipText("Enable/Disable Grid Numbers");
+//                switchGridNumbers.setFont(new Font("Tahoma", Font.PLAIN, 10));
+                switchGridNumbers.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {             
+                        repaint();
+			updateButton.setEnabled(true);
+                    }
+                });
                 biggerGrid = Settings.createButton("+");
                 biggerGrid.setToolTipText("Bigger Grid");
                 biggerGrid.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        gridSize = Math.min(gridSize + 10, 200); 
+                        gridSize = Math.min(gridSize + 10, 600); 
                         repaint();
 			updateButton.setEnabled(true);
                     }
@@ -269,7 +287,7 @@ public class DrawPanel extends JComponent {
 						Main.DISPLAY_PAINT.setMask(getMask());
                                                 
                                                 
-                                                Main.DISPLAY_PAINT.setGrid(gridSize, switchGrid.isSelected(), gridColor);
+                                                Main.DISPLAY_PAINT.setGrid(gridSize, switchGrid.isSelected(), gridColor, switchGridNumbers.isSelected());
 					} catch (OutOfMemoryError error) {
 						Settings.showError("Cannot update Image, file is probably large", error);
 					}
@@ -446,13 +464,20 @@ public class DrawPanel extends JComponent {
 	}
         
         /**
-         * returns the {@code  switchGridButton} 
+         * returns the {@code  switchGrid} Button
          * @return 
          */
         public JToggleButton getSwitchGridButton(){
             return switchGrid;
         }
-	
+
+        /**
+         * returns the {@code  switchGridNumbers} Button
+         * @return 
+         */
+        public JToggleButton getSwitchGridNumbersButton() {
+            return switchGridNumbers;
+        }
 	
 	/**
 	 * returns the {@code biggerGrid} 

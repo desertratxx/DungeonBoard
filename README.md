@@ -9,8 +9,16 @@ and applied when the image is reloaded.
 
 <img src="Examples/control.png" alt="View">
 
+If you move a map the Players need to know where they were standing. Added a coordinate system for this purpose.
+
+
+<img src="Examples/control-coordinates.png" alt="View">
+
+
+<img src="Examples/coordinates.png" width="600" alt="View">
 
 ## Running Dungeon Board
+
 <a href="https://github.com/desertratxx/DungeonBoard/blob/master/Versions/Dungeon%20Board%20v2.4.1_grid.jar">Download 2.4.1 with Grid</a>
 <br>
 When you first run Dungeon Board it will create a folder next to the .jar file. Inside of this are 4 folders (Layer, Image, Paint, Loading). Simply place all of your images you want to display in these folders in the .png format.

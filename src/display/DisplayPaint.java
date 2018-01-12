@@ -2,6 +2,7 @@ package display;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -50,6 +51,11 @@ public class DisplayPaint extends Display {
 	private boolean gridSelected;
 	
 	/**
+         * If true grid numbers are drawn
+	 */
+	private boolean gridNumbersSelected;
+	
+	/**
          * size of the grid
 	 */
 	private double gridSize;
@@ -92,18 +98,34 @@ public class DisplayPaint extends Display {
                     double adjustedGrid = gridSize * (1 / scale);
                     
                     adjustedGrid = Math.max(adjustedGrid, 3);
-                    
+                    g2d.setFont(new Font("TimesRoman", Font.PLAIN, 44)); 
                     int startY = (int)adjustedGrid - (int)(windowPos.y % (int)adjustedGrid); 
                     int startX = (int)adjustedGrid - (int)(windowPos.x % (int)adjustedGrid);
                     
                     for(int i = startX; i < Settings.DISPLAY_SIZE.width; i+=adjustedGrid){
+                        
+                        g2d.setColor(gridColor);
                         g2d.drawLine(i, 0, i, Settings.DISPLAY_SIZE.height);
+                        
+                        if(gridNumbersSelected){
+                            int coordinate = GridHelper.getXCoordinate(windowPos.x + i, adjustedGrid);                        
+                            g2d.setColor(new Color(gridColor.getRGB(), false));
+                            g2d.drawString(coordinate + "", i, 34);
+                        }
                     }
 
                     for(int i = startY; i < Settings.DISPLAY_SIZE.height; i+=adjustedGrid){
+                        
+                        g2d.setColor(gridColor);
                         g2d.drawLine(0, i, Settings.DISPLAY_SIZE.width, i);
+                        if(gridNumbersSelected){
+                            String coordinate = GridHelper.getYCoordinate(windowPos.y + i, adjustedGrid);
+                            g2d.setColor(new Color(gridColor.getRGB(), false));
+                            g2d.drawString(coordinate.toUpperCase() + "", 5, i);
+                        }
                     }
                     g2d.setColor(current);
+                    
                 }
 
                 
@@ -143,11 +165,13 @@ public class DisplayPaint extends Display {
          * @param gridSize
          * @param gridSelected
          * @param gridColor
+         * @param gridNumbersSelected 
 	 */
-	public void setGrid(double gridSize, boolean gridSelected, Color gridColor) {
+	public void setGrid(double gridSize, boolean gridSelected, Color gridColor, boolean gridNumbersSelected) {
                 this.gridSelected = gridSelected;
                 this.gridSize = gridSize;
                 this.gridColor = gridColor;
+                this.gridNumbersSelected = gridNumbersSelected;
                 
 		repaint();
 	}
