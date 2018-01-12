@@ -12,7 +12,7 @@ and applied when the image is reloaded.
 If you move a map the Players need to know where they were standing. Added a coordinate system for this purpose.
 
 
-<img src="Examples/control-coordinates.png" alt="View">
+<img src="Examples/control_coordinates.png" alt="View">
 
 
 <img src="Examples/coordinates.png" width="600" alt="View">
